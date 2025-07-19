@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!-- filepath: /home/tipriest/Documents/legged_ws/src/legged_control/legged_controllers/launch/simulation_complete.launch -->
+<launch>
+  <!-- Robot type argument -->
+  <arg name="robot_type" default="a1" doc="Robot type: [a1, aliengo, go1, laikago]"/>
+  <arg name="cheater" default="false" />
+  <arg name="paused" default="false" />
+  <arg name="use_sim_time" default="true" />
+  <arg name="gui" default="true" />
+  <arg name="headless" default="false" />
+  <arg name="debug" default="false" />
+
+  <!-- Set ROBOT_TYPE environment variable -->
+  <!-- <env name="ROBOT_TYPE" value="$(arg robot_type)" /> -->
+
+  <!-- Step 1: Launch empty world simulation and RVIZ visualization-->
+  <include file="$(find legged_unitree_description)/launch/empty_world.launch">
+    <arg name="robot_type" value="$(arg robot_type)" />
+    <!-- <arg name="paused" value="$(arg paused)" />
+    <arg name="use_sim_time" value="$(arg use_sim_time)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="debug" value="$(arg debug)" /> -->
+  </include>
+
+  <!-- Step 2: Load the controller -->
+  <include file="$(find legged_controllers)/launch/load_controller.launch">
+    <arg name="cheater" value="$(arg cheater)" />
+  </include>
+
+  <node name = "rqt_controller_manager" pkg="rqt_controller_manager" type="rqt_controller_manager"/>
+
+
+
+  <arg name = "use_below" default ="false"/>
+  <group if = "$(arg use_below)">
+    <node name="controller_starter" pkg="legged_controllers" type="start_controller.py" output="screen" if="$(arg cheater)">
+      <param name="controller_name" value="controllers/legged_cheater_controller" />
+    </node>
+
+    <node name="controller_starter" pkg="legged_controllers" type="start_controller.py" output="screen" unless="$(arg cheater)">
+      <param name="controller_name" value="controllers/legged_controller" />
+    </node>
+    <!-- Step 3: Auto-start the controller (optional) -->
+    <!-- Launch RViz for visualization -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find legged_controllers)/rviz/legged_robot.rviz" output="screen" />
+
+    <!-- Information message -->
+    <node name="info_display" pkg="rostopic" type="rostopic" args="echo /rosout" output="screen">
+      <remap from="/rosout" to="/simulation_info" />
+    </node>
+  </group>
+
+
+</launch>
