@@ -1,30 +1,5 @@
 # legged_control
 
-> [!NOTE]
-> **This software is not supported anymore! The authors of this software are developing a completely new framework and are not working on this project anymore. Please excuse any inconvenience this might cause.**
-
-> [!NOTE]
-> You might be interested in this pipeline with perception, check [legged_perceptive](https://github.com/qiayuanl/legged_perceptive).
-
-## Publications
-
-If you use this work in an academic context, please consider citing the following publications:
-
-    @misc{leggedcontrol,
-       title = {{legged_control}:  NMPC, WBC, state estimation, and sim2real framework for legged robots based on OCS2 and ros-controls},
-       note = {[Online]. Available: \url{https://github.com/qiayuanl/legged_control}},
-       author = {Qiayuan Liao and others}
-    }
-
-    @inproceedings{liao2023walking,
-      title={Walking in narrow spaces: Safety-critical locomotion control for quadrupedal robots with duality-based optimization},
-      author={Liao, Qiayuan and Li, Zhongyu and Thirugnanam, Akshay and Zeng, Jun and Sreenath, Koushil},
-      booktitle={2023 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-      pages={2723--2730},
-      year={2023},
-      organization={IEEE}
-    }
-
 ## Introduction
 
 legged_control is an NMPC-WBC legged robot control stack and framework based
@@ -62,6 +37,9 @@ its dependencies following the step below.
    ```
    # Clone OCS2
    git clone git@github.com:leggedrobotics/ocs2.git
+   rm ocs2_perceptive folder
+   rm ocs2_mpcnet folder
+   rm ocs2_doc folder
    # Clone pinocchio
    git clone --recurse-submodules https://github.com/leggedrobotics/pinocchio.git
    # Clone hpp-fcl
@@ -70,6 +48,7 @@ its dependencies following the step below.
    git clone https://github.com/leggedrobotics/ocs2_robotic_assets.git
    # Install dependencies
    sudo apt install liburdfdom-dev liboctomap-dev libassimp-dev
+   sudo apt install ros-noetic-rqt-controller-manager
    ```
 2. Compile the `ocs2_legged_robot_ros` package with [catkin tools](https://catkin-tools.readthedocs.io/en/latest/)
    instead of `catkin_make`. It will take you about ten minutes.
@@ -102,7 +81,39 @@ compile `legged_unitree_hw` (TODO: add a legged prefix to the package name)
 catkin build legged_unitree_hw
 ```
 
-## Quick Start
+## Quick Start Step by Step(Simulation)
+
+1. Set your robot type as an environment variable: ROBOT_TYPE
+
+```
+export ROBOT_TYPE=a1
+```
+
+2. Run the simulation:
+
+```
+roslaunch legged_unitree_description empty_world.launch
+```
+
+
+3. Load the controller:
+
+```
+roslaunch legged_controllers load_controller.launch cheater:=false
+```
+
+4. Start the `legged_controller` or `legged_cheater_controller`
+
+```
+rosrun rqt_controller_manager rqt_controller_manager
+```
+
+5. Set the gait in the terminal of `load_controller.launch`, then use RViz (you need to add what you want to display by
+   yourself) and control the robot by `cmd_vel` and `move_base_simple/goal`:
+
+![ezgif-5-684a1e1e23.gif](https://s2.loli.net/2022/07/27/lBzdeRa1gmvwx9C.gif)
+
+## Quick Start Step by Step(Hardware)
 
 1. Set your robot type as an environment variable: ROBOT_TYPE
 
