@@ -16,11 +16,6 @@
   <!-- Step 1: Launch empty world simulation and RVIZ visualization-->
   <include file="$(find legged_unitree_description)/launch/empty_world.launch">
     <arg name="robot_type" value="$(arg robot_type)" />
-    <!-- <arg name="paused" value="$(arg paused)" />
-    <arg name="use_sim_time" value="$(arg use_sim_time)" />
-    <arg name="gui" value="$(arg gui)" />
-    <arg name="headless" value="$(arg headless)" />
-    <arg name="debug" value="$(arg debug)" /> -->
   </include>
 
   <!-- Step 2: Load the controller -->
